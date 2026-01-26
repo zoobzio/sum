@@ -37,8 +37,6 @@ github.com/zoobzio/openapi v1.0.0 h1:fm0efmJE6Qhtj6cKnY1k80BGyuwCGtPY2lvmjdbD724
 github.com/zoobzio/openapi v1.0.0/go.mod h1:B9H/O52knkfi9j9KIGRufcSFYUyAg6gDhUGocMCFNfo=
 github.com/zoobzio/rocco v0.1.1 h1:nM2j5LHvOVvgnkb9YbYXffXkSiqkqi/ZQlPPDMdtKyI=
 github.com/zoobzio/rocco v0.1.1/go.mod h1:VIO4wJsJSTwD06OZpNrxKS7ZDsuRTn+VQauRbOMfEKA=
-github.com/zoobzio/scio v0.0.2 h1:kG+cm7aXtYGLsfZ2jf7AQ0X1CvcVnekrYBLOop8b2uo=
-github.com/zoobzio/scio v0.0.2/go.mod h1:PStUBGdsZIimPHeDgAMjHkknxMedWB+cImU2KrgZqHc=
 github.com/zoobzio/scio v0.0.3 h1:nWd+VGKjlTB4nJUlFWvvdPC5kDL0icKLmtQiVSPatHk=
 github.com/zoobzio/scio v0.0.3/go.mod h1:amQuCI7nLbUkbSP9IZH9Qd5HcDQ6bh72iWN4rOyV7J4=
 github.com/zoobzio/sentinel v1.0.2 h1:hTs5Ke2Vi0VgOkoHSJF9G3BYnxTQjMbvOH+qbbQLaoY=

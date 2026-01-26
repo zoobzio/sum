@@ -2,6 +2,11 @@
 
 Thank you for your interest in contributing to sum.
 
+## Prerequisites
+
+- Go 1.24 or later
+- golangci-lint (installed via `make install-tools`)
+
 ## Development Setup
 
 ```bash
