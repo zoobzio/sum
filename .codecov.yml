@@ -23,6 +23,17 @@ ignore:
   - ".github/**"
   - "vendor/**"
 
+flags:
+  unit:
+    paths:
+      - "*.go"
+      - "!testing/**"
+    carryforward: true
+  integration:
+    paths:
+      - "testing/integration/**"
+    carryforward: true
+
 comment:
   layout: "reach,diff,flags,tree"
   behavior: default
