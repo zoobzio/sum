@@ -1,39 +1,30 @@
 module github.com/zoobzio/sum
 
-go 1.24.5
+go 1.24.0
+
+toolchain go1.25.3
 
 require (
-	github.com/zoobzio/atom v0.1.0
-	github.com/zoobzio/capitan v0.1.0
-	github.com/zoobzio/flume v0.1.0
-	github.com/zoobzio/pipz v0.1.3
-	github.com/zoobzio/rocco v0.0.17
-	github.com/zoobzio/sentinel v0.1.4
+	github.com/jmoiron/sqlx v1.4.0
+	github.com/zoobzio/astql v1.0.5
+	github.com/zoobzio/capitan v1.0.0
+	github.com/zoobzio/fig v0.0.1
+	github.com/zoobzio/grub v0.1.3
+	github.com/zoobzio/rocco v0.1.1
+	github.com/zoobzio/scio v0.0.3
+	github.com/zoobzio/sentinel v1.0.2
+	github.com/zoobzio/slush v0.0.2
 )
 
 require (
-	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
-	github.com/go-playground/locales v0.14.1 // indirect
-	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.28.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/zoobzio/clockz v0.0.2 // indirect
-	github.com/zoobzio/openapi v0.1.1 // indirect
-	golang.org/x/crypto v0.42.0 // indirect
-	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
+	github.com/zoobzio/atom v1.0.0 // indirect
+	github.com/zoobzio/check v0.0.2 // indirect
+	github.com/zoobzio/dbml v1.0.0 // indirect
+	github.com/zoobzio/edamame v1.0.1 // indirect
+	github.com/zoobzio/openapi v1.0.0 // indirect
+	github.com/zoobzio/soy v1.0.2 // indirect
+	github.com/zoobzio/vecna v0.0.2 // indirect
+	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/zoobzio/atom => ../atom
-
-replace github.com/zoobzio/capitan => ../capitan
-
-replace github.com/zoobzio/flume => ../flume
-
-replace github.com/zoobzio/pipz => ../pipz
-
-replace github.com/zoobzio/rocco => ../rocco
-
-replace github.com/zoobzio/sentinel => ../sentinel
