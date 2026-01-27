@@ -10,7 +10,7 @@ require (
 	github.com/zoobzio/capitan v1.0.0
 	github.com/zoobzio/fig v0.0.1
 	github.com/zoobzio/grub v0.1.3
-	github.com/zoobzio/rocco v0.1.1
+	github.com/zoobzio/rocco v0.1.2
 	github.com/zoobzio/scio v0.0.3
 	github.com/zoobzio/sentinel v1.0.2
 	github.com/zoobzio/slush v0.0.2
@@ -19,7 +19,7 @@ require (
 require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/zoobzio/atom v1.0.0 // indirect
-	github.com/zoobzio/check v0.0.2 // indirect
+	github.com/zoobzio/check v0.0.3 // indirect
 	github.com/zoobzio/dbml v1.0.0 // indirect
 	github.com/zoobzio/edamame v1.0.1 // indirect
 	github.com/zoobzio/openapi v1.0.0 // indirect

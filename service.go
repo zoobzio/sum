@@ -31,7 +31,7 @@ type Service struct {
 func New(cfg ServiceConfig) *Service {
 	once.Do(func() {
 		instance = &Service{
-			engine:  rocco.NewEngine(cfg.Host, cfg.Port, nil),
+			engine:  rocco.NewEngine(),
 			catalog: scio.New(),
 			config:  cfg,
 		}
@@ -74,7 +74,7 @@ func (s *Service) Config() ServiceConfig {
 
 // Start begins serving. This method blocks until shutdown.
 func (s *Service) Start() error {
-	return s.engine.Start()
+	return s.engine.Start(s.config.Host, s.config.Port)
 }
 
 // Shutdown gracefully stops the service.
@@ -93,7 +93,7 @@ func (s *Service) Run() error {
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- s.engine.Start()
+		errCh <- s.engine.Start(s.config.Host, s.config.Port)
 	}()
 
 	select {
