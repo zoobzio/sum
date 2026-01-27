@@ -7,12 +7,6 @@ import (
 	"github.com/zoobzio/fig"
 )
 
-// ServiceConfig defines the service configuration.
-type ServiceConfig struct {
-	Host string
-	Port int
-}
-
 // Config loads configuration of type T via fig and registers it with the service locator.
 // Pass nil for provider if secrets are not needed.
 // Retrieve the configuration later with Use[T](ctx).

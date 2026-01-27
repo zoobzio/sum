@@ -37,11 +37,7 @@ func TestServiceLifecycle(t *testing.T) {
 
 	ctx := sumtest.TestContext(t)
 
-	// Use port 0 to get a random available port
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: 0,
-	})
+	svc := sum.New()
 
 	svc.Tag("test", "Test endpoints")
 
@@ -51,7 +47,7 @@ func TestServiceLifecycle(t *testing.T) {
 	var startOnce sync.Once
 	go func() {
 		startOnce.Do(func() { close(startedCh) })
-		errCh <- svc.Start()
+		errCh <- svc.Start("127.0.0.1", 0) // Port 0 for random available port
 	}()
 
 	// Wait for server to start
@@ -88,10 +84,7 @@ func TestServiceWithHandlers(t *testing.T) {
 
 	ctx := sumtest.TestContext(t)
 
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: 0,
-	})
+	svc := sum.New()
 
 	// Register a simple health endpoint
 	healthEndpoint := rocco.GET("/health", func(req *rocco.Request[rocco.NoBody]) (healthResponse, error) {
@@ -108,7 +101,7 @@ func TestServiceWithHandlers(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- svc.Start()
+		errCh <- svc.Start("127.0.0.1", 0)
 	}()
 
 	// Wait for server to be ready
@@ -140,15 +133,12 @@ func TestServiceRun(t *testing.T) {
 	resetServiceSingleton()
 	t.Cleanup(resetServiceSingleton)
 
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: 0,
-	})
+	svc := sum.New()
 
 	// Run in background, will be stopped by test cleanup
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- svc.Run()
+		errCh <- svc.Run("127.0.0.1", 0)
 	}()
 
 	// Give server time to start
@@ -167,10 +157,7 @@ func TestServiceCatalog(t *testing.T) {
 	resetServiceSingleton()
 	t.Cleanup(resetServiceSingleton)
 
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: 8080,
-	})
+	svc := sum.New()
 
 	catalog := svc.Catalog()
 	if catalog == nil {
@@ -187,10 +174,7 @@ func TestServiceMultipleHandlers(t *testing.T) {
 
 	ctx := sumtest.TestContext(t)
 
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: 0,
-	})
+	svc := sum.New()
 
 	// Register multiple endpoints
 	endpoints := []rocco.Endpoint{
@@ -208,7 +192,7 @@ func TestServiceMultipleHandlers(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- svc.Start()
+		errCh <- svc.Start("127.0.0.1", 0)
 	}()
 
 	time.Sleep(200 * time.Millisecond)
@@ -241,10 +225,7 @@ func TestServiceHTTPRequest(t *testing.T) {
 
 	// Use a specific port for HTTP testing
 	port := 18080
-	svc := sum.New(sum.ServiceConfig{
-		Host: "127.0.0.1",
-		Port: port,
-	})
+	svc := sum.New()
 
 	healthEndpoint := rocco.GET("/health", func(req *rocco.Request[rocco.NoBody]) (healthResponse, error) {
 		return healthResponse{Status: "ok"}, nil
@@ -253,7 +234,7 @@ func TestServiceHTTPRequest(t *testing.T) {
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- svc.Start()
+		errCh <- svc.Start("127.0.0.1", port)
 	}()
 
 	// Wait for server to be ready

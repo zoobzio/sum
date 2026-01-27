@@ -23,17 +23,15 @@ var (
 type Service struct {
 	engine  *rocco.Engine
 	catalog *scio.Scio
-	config  ServiceConfig
 }
 
 // New creates or returns the singleton Service.
-// Subsequent calls return the existing instance, ignoring the provided config.
-func New(cfg ServiceConfig) *Service {
+// Subsequent calls return the existing instance.
+func New() *Service {
 	once.Do(func() {
 		instance = &Service{
 			engine:  rocco.NewEngine(),
 			catalog: scio.New(),
-			config:  cfg,
 		}
 	})
 	return instance
@@ -67,14 +65,9 @@ func (s *Service) Catalog() *scio.Scio {
 	return s.catalog
 }
 
-// Config returns the service configuration.
-func (s *Service) Config() ServiceConfig {
-	return s.config
-}
-
 // Start begins serving. This method blocks until shutdown.
-func (s *Service) Start() error {
-	return s.engine.Start(s.config.Host, s.config.Port)
+func (s *Service) Start(host string, port int) error {
+	return s.engine.Start(host, port)
 }
 
 // Shutdown gracefully stops the service.
@@ -87,13 +80,13 @@ func (s *Service) Shutdown(ctx context.Context) error {
 
 // Run starts the service and blocks until a shutdown signal is received.
 // Handles SIGINT and SIGTERM, then performs graceful shutdown with a 30 second timeout.
-func (s *Service) Run() error {
+func (s *Service) Run(host string, port int) error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
 	errCh := make(chan error, 1)
 	go func() {
-		errCh <- s.engine.Start(s.config.Host, s.config.Port)
+		errCh <- s.engine.Start(host, port)
 	}()
 
 	select {
