@@ -19,7 +19,9 @@ func NewDatabase[M any](db *sqlx.DB, table string, renderer astql.Renderer) (*Da
 	if err != nil {
 		return nil, err
 	}
-	svc().catalog.RegisterDatabase("db://"+table, gdb.Atomic())
+	if err := svc().catalog.RegisterDatabase("db://"+table, gdb.Atomic()); err != nil {
+		return nil, err
+	}
 	return &Database[M]{Database: gdb}, nil
 }
 
@@ -31,10 +33,12 @@ type Store[M any] struct {
 
 // NewStore creates a Store[M] and registers it with the scio catalog.
 // Requires sum.New() to have been called first.
-func NewStore[M any](provider grub.StoreProvider, name string) *Store[M] {
+func NewStore[M any](provider grub.StoreProvider, name string) (*Store[M], error) {
 	store := grub.NewStore[M](provider)
-	svc().catalog.RegisterStore("kv://"+name, store.Atomic())
-	return &Store[M]{Store: store}
+	if err := svc().catalog.RegisterStore("kv://"+name, store.Atomic()); err != nil {
+		return nil, err
+	}
+	return &Store[M]{Store: store}, nil
 }
 
 // Bucket wraps grub.Bucket and registers with scio on creation.
@@ -45,8 +49,10 @@ type Bucket[M any] struct {
 
 // NewBucket creates a Bucket[M] and registers it with the scio catalog.
 // Requires sum.New() to have been called first.
-func NewBucket[M any](provider grub.BucketProvider, name string) *Bucket[M] {
+func NewBucket[M any](provider grub.BucketProvider, name string) (*Bucket[M], error) {
 	bucket := grub.NewBucket[M](provider)
-	svc().catalog.RegisterBucket("bcs://"+name, bucket.Atomic())
-	return &Bucket[M]{Bucket: bucket}
+	if err := svc().catalog.RegisterBucket("bcs://"+name, bucket.Atomic()); err != nil {
+		return nil, err
+	}
+	return &Bucket[M]{Bucket: bucket}, nil
 }

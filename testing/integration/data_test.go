@@ -134,7 +134,10 @@ func TestStoreIntegration(t *testing.T) {
 
 	_ = sum.Start()
 
-	store := sum.NewStore[testModel](mockStoreProvider{}, "test-store")
+	store, err := sum.NewStore[testModel](mockStoreProvider{}, "test-store")
+	if err != nil {
+		t.Fatalf("NewStore failed: %v", err)
+	}
 
 	if store == nil {
 		t.Fatal("expected non-nil store")
@@ -194,7 +197,10 @@ func TestBucketIntegration(t *testing.T) {
 
 	_ = sum.Start()
 
-	bucket := sum.NewBucket[testModel](mockBucketProvider{}, "test-bucket")
+	bucket, err := sum.NewBucket[testModel](mockBucketProvider{}, "test-bucket")
+	if err != nil {
+		t.Fatalf("NewBucket failed: %v", err)
+	}
 
 	if bucket == nil {
 		t.Fatal("expected non-nil bucket")
