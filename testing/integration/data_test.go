@@ -22,9 +22,9 @@ type testModel struct {
 	Name string `db:"name"`
 }
 
-// testClient wraps a grub.Database for testing.
-type testClient struct {
-	db *grub.Database[testModel]
+// testDBStore embeds sum.Database for testing custom store patterns.
+type testDBStore struct {
+	*sum.Database[testModel]
 }
 
 func TestDatabaseIntegration(t *testing.T) {
@@ -47,7 +47,7 @@ func TestDatabaseIntegration(t *testing.T) {
 
 	sqlxDB := sqlx.NewDb(db, "postgres")
 
-	k := sum.Start()
+	_ = sum.Start()
 
 	// Create test table
 	_, err = sqlxDB.Exec(`
@@ -63,27 +63,23 @@ func TestDatabaseIntegration(t *testing.T) {
 		sqlxDB.Exec(`DROP TABLE IF EXISTS test_models`)
 	})
 
-	err = sum.Database[testClient, testModel](
-		k,
-		sqlxDB,
-		"test_models",
-		"id",
-		postgres.New(),
-		func(db *grub.Database[testModel]) testClient {
-			return testClient{db: db}
-		},
-	)
+	database, err := sum.NewDatabase[testModel](sqlxDB, "test_models", postgres.New())
 	if err != nil {
-		t.Fatalf("Database registration failed: %v", err)
+		t.Fatalf("NewDatabase failed: %v", err)
 	}
 
-	client, err := sum.Use[testClient](ctx)
-	if err != nil {
-		t.Fatalf("Use[testClient] failed: %v", err)
+	if database == nil {
+		t.Fatal("expected non-nil database")
 	}
 
-	if client.db == nil {
-		t.Error("expected non-nil database in client")
+	if database.Database == nil {
+		t.Error("expected non-nil embedded grub.Database")
+	}
+
+	// Verify embedding pattern works
+	store := &testDBStore{Database: database}
+	if store.Database == nil {
+		t.Error("expected non-nil database in embedded store")
 	}
 }
 
@@ -118,8 +114,9 @@ func (m mockStoreProvider) SetBatch(ctx context.Context, items map[string][]byte
 	return nil
 }
 
-type testStoreClient struct {
-	store *grub.Store[testModel]
+// testKVStore embeds sum.Store for testing custom store patterns.
+type testKVStore struct {
+	*sum.Store[testModel]
 }
 
 func TestStoreIntegration(t *testing.T) {
@@ -135,27 +132,22 @@ func TestStoreIntegration(t *testing.T) {
 	sum.Reset()
 	t.Cleanup(sum.Reset)
 
-	k := sum.Start()
+	_ = sum.Start()
 
-	err := sum.Store[testStoreClient, testModel](
-		k,
-		mockStoreProvider{},
-		"test-store",
-		func(s *grub.Store[testModel]) testStoreClient {
-			return testStoreClient{store: s}
-		},
-	)
-	if err != nil {
-		t.Fatalf("Store registration failed: %v", err)
+	store := sum.NewStore[testModel](mockStoreProvider{}, "test-store")
+
+	if store == nil {
+		t.Fatal("expected non-nil store")
 	}
 
-	client, err := sum.Use[testStoreClient](ctx)
-	if err != nil {
-		t.Fatalf("Use[testStoreClient] failed: %v", err)
+	if store.Store == nil {
+		t.Error("expected non-nil embedded grub.Store")
 	}
 
-	if client.store == nil {
-		t.Error("expected non-nil store in client")
+	// Verify embedding pattern works
+	kvStore := &testKVStore{Store: store}
+	if kvStore.Store == nil {
+		t.Error("expected non-nil store in embedded store")
 	}
 }
 
@@ -182,8 +174,9 @@ func (m mockBucketProvider) List(ctx context.Context, prefix string, limit int) 
 	return nil, nil
 }
 
-type testBucketClient struct {
-	bucket *grub.Bucket[testModel]
+// testBlobStore embeds sum.Bucket for testing custom store patterns.
+type testBlobStore struct {
+	*sum.Bucket[testModel]
 }
 
 func TestBucketIntegration(t *testing.T) {
@@ -199,26 +192,21 @@ func TestBucketIntegration(t *testing.T) {
 	sum.Reset()
 	t.Cleanup(sum.Reset)
 
-	k := sum.Start()
+	_ = sum.Start()
 
-	err := sum.Bucket[testBucketClient, testModel](
-		k,
-		mockBucketProvider{},
-		"test-bucket",
-		func(b *grub.Bucket[testModel]) testBucketClient {
-			return testBucketClient{bucket: b}
-		},
-	)
-	if err != nil {
-		t.Fatalf("Bucket registration failed: %v", err)
+	bucket := sum.NewBucket[testModel](mockBucketProvider{}, "test-bucket")
+
+	if bucket == nil {
+		t.Fatal("expected non-nil bucket")
 	}
 
-	client, err := sum.Use[testBucketClient](ctx)
-	if err != nil {
-		t.Fatalf("Use[testBucketClient] failed: %v", err)
+	if bucket.Bucket == nil {
+		t.Error("expected non-nil embedded grub.Bucket")
 	}
 
-	if client.bucket == nil {
-		t.Error("expected non-nil bucket in client")
+	// Verify embedding pattern works
+	blobStore := &testBlobStore{Bucket: bucket}
+	if blobStore.Bucket == nil {
+		t.Error("expected non-nil bucket in embedded store")
 	}
 }

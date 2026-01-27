@@ -31,8 +31,8 @@ github.com/zoobzio/edamame v1.0.1 h1:Mynav/EvOEVjQ36JrKm9I3k7nm9t3VgGC1bpyw2rFMA
 github.com/zoobzio/edamame v1.0.1/go.mod h1:UVfTcjd//Nfs2lLNWrQqomd0O9f0ic31PftXz3KvyWw=
 github.com/zoobzio/fig v0.0.1 h1:EGicpSW/aaRipFj/xp7KLLzGB62IilKxtqsdfNE2Y40=
 github.com/zoobzio/fig v0.0.1/go.mod h1:t7choz//hxkpcT+kbXkKMhiJBnf9nMG9Z9sughIqw9g=
-github.com/zoobzio/grub v0.1.3 h1:EiR+IegQqd6biuVYpsOLCQZnPJQo9eJNRfKfiC8AdPg=
-github.com/zoobzio/grub v0.1.3/go.mod h1:i5D7qeDr4xasu2tJyd0iXergdu9E/pWrRG86UJLhCy8=
+github.com/zoobzio/grub v0.1.4 h1:OEblbg2rRw8nYymkTE5tAchiDnqGxK2Sf4OJOROFU2Q=
+github.com/zoobzio/grub v0.1.4/go.mod h1:i5D7qeDr4xasu2tJyd0iXergdu9E/pWrRG86UJLhCy8=
 github.com/zoobzio/openapi v1.0.0 h1:fm0efmJE6Qhtj6cKnY1k80BGyuwCGtPY2lvmjdbD724=
 github.com/zoobzio/openapi v1.0.0/go.mod h1:B9H/O52knkfi9j9KIGRufcSFYUyAg6gDhUGocMCFNfo=
 github.com/zoobzio/rocco v0.1.2 h1:yXAF0X9Wpgb8UwLpRvbPLZTid1wsa9XQkSJkfSJJLag=
