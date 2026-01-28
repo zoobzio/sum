@@ -10,7 +10,7 @@ require (
 	github.com/zoobzio/capitan v1.0.0
 	github.com/zoobzio/fig v0.0.1
 	github.com/zoobzio/grub v0.1.4
-	github.com/zoobzio/rocco v0.1.2
+	github.com/zoobzio/rocco v0.1.4
 	github.com/zoobzio/scio v0.0.3
 	github.com/zoobzio/sentinel v1.0.2
 	github.com/zoobzio/slush v0.0.2
