@@ -13,6 +13,14 @@ import (
 // Only available in test builds.
 func Reset() {
 	slush.Reset()
+	if instance != nil {
+		instance.mu.Lock()
+		instance.encryptors = make(map[EncryptAlgo]Encryptor)
+		instance.hashers = make(map[HashAlgo]Hasher)
+		instance.maskers = make(map[MaskType]Masker)
+		instance.codec = nil
+		instance.mu.Unlock()
+	}
 	instance = nil
 	once = sync.Once{}
 }

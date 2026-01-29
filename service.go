@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/zoobzio/cereal"
 	"github.com/zoobzio/rocco"
 	"github.com/zoobzio/scio"
 )
@@ -21,8 +22,13 @@ var (
 
 // Service wraps a rocco engine and scio catalog, providing application lifecycle.
 type Service struct {
-	engine  *rocco.Engine
-	catalog *scio.Scio
+	encryptors map[cereal.EncryptAlgo]cereal.Encryptor
+	hashers    map[cereal.HashAlgo]cereal.Hasher
+	maskers    map[cereal.MaskType]cereal.Masker
+	engine     *rocco.Engine
+	catalog    *scio.Scio
+	codec      cereal.Codec
+	mu         sync.RWMutex
 }
 
 // New creates or returns the singleton Service.
@@ -30,8 +36,11 @@ type Service struct {
 func New() *Service {
 	once.Do(func() {
 		instance = &Service{
-			engine:  rocco.NewEngine(),
-			catalog: scio.New(),
+			engine:     rocco.NewEngine(),
+			catalog:    scio.New(),
+			encryptors: make(map[cereal.EncryptAlgo]cereal.Encryptor),
+			hashers:    make(map[cereal.HashAlgo]cereal.Hasher),
+			maskers:    make(map[cereal.MaskType]cereal.Masker),
 		}
 	})
 	return instance
@@ -63,6 +72,39 @@ func (s *Service) Engine() *rocco.Engine {
 // Catalog returns the scio data catalog for advanced usage.
 func (s *Service) Catalog() *scio.Scio {
 	return s.catalog
+}
+
+// WithEncryptor registers an encryptor for the given algorithm.
+func (s *Service) WithEncryptor(algo cereal.EncryptAlgo, enc cereal.Encryptor) *Service {
+	s.mu.Lock()
+	s.encryptors[algo] = enc
+	s.mu.Unlock()
+	return s
+}
+
+// WithHasher registers a hasher for the given algorithm.
+func (s *Service) WithHasher(algo cereal.HashAlgo, h cereal.Hasher) *Service {
+	s.mu.Lock()
+	s.hashers[algo] = h
+	s.mu.Unlock()
+	return s
+}
+
+// WithMasker registers a masker for the given mask type.
+func (s *Service) WithMasker(mt cereal.MaskType, m cereal.Masker) *Service {
+	s.mu.Lock()
+	s.maskers[mt] = m
+	s.mu.Unlock()
+	return s
+}
+
+// WithCodec sets the default codec for cereal processors and the rocco engine.
+func (s *Service) WithCodec(codec cereal.Codec) *Service {
+	s.mu.Lock()
+	s.codec = codec
+	s.mu.Unlock()
+	s.engine.WithCodec(roccoCodec{codec})
+	return s
 }
 
 // Start begins serving. This method blocks until shutdown.
