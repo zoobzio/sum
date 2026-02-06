@@ -7,6 +7,37 @@ import (
 	"github.com/zoobzio/sentinel"
 )
 
+type (
+	// Signal is a named event identifier.
+	Signal = capitan.Signal
+	// Severity is the importance level of an emission.
+	Severity = capitan.Severity
+)
+
+// NewSignal creates a signal with name and description.
+var NewSignal = capitan.NewSignal
+
+// Emission function re-exports.
+var (
+	Emit  = capitan.Emit
+	Debug = capitan.Debug
+	Info  = capitan.Info
+	Warn  = capitan.Warn
+	Error = capitan.Error
+)
+
+// Field key constructor re-exports.
+var (
+	NewStringKey   = capitan.NewStringKey
+	NewIntKey      = capitan.NewIntKey
+	NewInt64Key    = capitan.NewInt64Key
+	NewFloat64Key  = capitan.NewFloat64Key
+	NewBoolKey     = capitan.NewBoolKey
+	NewTimeKey     = capitan.NewTimeKey
+	NewDurationKey = capitan.NewDurationKey
+	NewErrorKey    = capitan.NewErrorKey
+)
+
 // Event provides bidirectional access to a signal with typed data.
 // Use Emit to dispatch events and Listen to register callbacks.
 type Event[T any] struct {
