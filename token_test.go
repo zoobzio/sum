@@ -136,3 +136,62 @@ func TestRequireIntegrationWithRegistry(t *testing.T) {
 		t.Error("expected non-nil service")
 	}
 }
+
+type testForSvc interface{ DoWork() }
+type testForSvcImpl struct{}
+
+func (testForSvcImpl) DoWork() {}
+
+func TestForMethodIntegration(t *testing.T) {
+	resetRegistry(t)
+
+	k := Start()
+	tok := NewToken("handlers")
+	Register[testForSvc](k, testForSvcImpl{}).For(tok)
+	Freeze(k)
+
+	// Without token: denied
+	_, err := Use[testForSvc](context.Background())
+	if err == nil {
+		t.Error("expected error without token")
+	}
+
+	// With token: allowed
+	ctx := WithToken(context.Background(), tok)
+	svc, err := Use[testForSvc](ctx)
+	if err != nil {
+		t.Fatalf("expected access with token, got %v", err)
+	}
+	if svc == nil {
+		t.Error("expected non-nil service")
+	}
+}
+
+func TestForMethodMultipleTokens(t *testing.T) {
+	resetRegistry(t)
+
+	k := Start()
+	handlers := NewToken("handlers")
+	ingest := NewToken("ingest")
+	Register[testForSvc](k, testForSvcImpl{}).For(handlers, ingest)
+	Freeze(k)
+
+	// handlers token grants access
+	ctx := WithToken(context.Background(), handlers)
+	if _, err := Use[testForSvc](ctx); err != nil {
+		t.Errorf("handlers token should grant access: %v", err)
+	}
+
+	// ingest token also grants access
+	ctx = WithToken(context.Background(), ingest)
+	if _, err := Use[testForSvc](ctx); err != nil {
+		t.Errorf("ingest token should grant access: %v", err)
+	}
+
+	// unrelated token denied
+	other := NewToken("other")
+	ctx = WithToken(context.Background(), other)
+	if _, err := Use[testForSvc](ctx); err == nil {
+		t.Error("other token should be denied")
+	}
+}

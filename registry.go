@@ -10,13 +10,31 @@ import (
 type (
 	// Guard is a validation function that permits or denies service access.
 	Guard = slush.Guard
-	// Handle configures a registered service with optional guards.
-	Handle[T any] = slush.Handle[T]
 	// ServiceInfo describes a registered service for enumeration.
 	ServiceInfo = slush.ServiceInfo
 	// Key grants the capability to register services.
 	Key = slush.Key
 )
+
+// Handle configures a registered service with optional guards.
+// Wraps slush.Handle to provide sum-specific conveniences.
+type Handle[T any] struct {
+	*slush.Handle[T]
+}
+
+// Guard adds a custom guard function to the service.
+// Returns the Handle for chaining.
+func (h *Handle[T]) Guard(g Guard) *Handle[T] {
+	h.Handle.Guard(g)
+	return h
+}
+
+// For restricts service access to contexts bearing any of the provided tokens.
+// Equivalent to Guard(Require(tokens...)).
+func (h *Handle[T]) For(tokens ...Token) *Handle[T] {
+	h.Handle.Guard(Require(tokens...))
+	return h
+}
 
 // Error re-exports from slush.
 var (
@@ -56,7 +74,7 @@ func Freeze(k Key) {
 // Returns a Handle for optional guard configuration.
 // Panics if Start has not been called, key is invalid, or registry is frozen.
 func Register[T any](k Key, impl T) *Handle[T] {
-	return slush.Register[T](k, impl)
+	return &Handle[T]{slush.Register[T](k, impl)}
 }
 
 // Use retrieves a service by its contract type T.
